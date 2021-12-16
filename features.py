@@ -5,10 +5,10 @@ import itertools
 
 def allFeatures(data):
     output = []
-    chans = len(data.ix[1,:])
+    chans = len(data.iloc[1,:])
     freq = np.fft.fftfreq(len(data['time']),1.0/len(data['time']))
     maxFreqs = []
-    times = len(data.ix[:,1])-1 
+    times = len(data.iloc[:,1])-1 
     featureList = []
     delta1 = data.values[1:,:] - data.values[:times,:] # the 1st derivative
     glob1 = pd.DataFrame(delta1)
@@ -20,21 +20,21 @@ def allFeatures(data):
     maxFreqs2 = []
 # Channel Features
     for i in range(1,chans):
-        output.append(data.ix[:,i].abs().max())
+        output.append(data.iloc[:,i].abs().max())
         featureList.append('chan%iMaxAmp'%(i-1))
-        output.append(data.ix[:,i].abs().mean())
+        output.append(data.iloc[:,i].abs().mean())
         featureList.append('chan%iMeanAmp'%(i-1))
-        output.append(data.ix[:,i].abs().var()) 
+        output.append(data.iloc[:,i].abs().var()) 
         featureList.append('chan%iVarAbs'%(i-1))   
-        output.append(data.ix[:,i].var())
+        output.append(data.iloc[:,i].var())
         featureList.append('chan%iVar'%(i-1))
-        output.append(abs(np.fft.fft(data.ix[:,i])).max())
+        output.append(abs(np.fft.fft(data.iloc[:,i])).max())
         featureList.append('chan%iMaxFourAmp'%(i-1))
-        output.append(abs(np.fft.fft(data.ix[:,i])).mean())
+        output.append(abs(np.fft.fft(data.iloc[:,i])).mean())
         featureList.append('chan%iMeanFourAmp'%(i-1))
-        output.append(abs(np.fft.fft(data.ix[:,i])).var())
+        output.append(abs(np.fft.fft(data.iloc[:,i])).var())
         featureList.append('chan%iVarFourAmp'%(i-1))
-        ft = abs(np.fft.fft(data.ix[:,i]))
+        ft = abs(np.fft.fft(data.iloc[:,i]))
         output.append(abs(freq[np.argmax(ft)]))
         featureList.append('chan%iMaxFreq'%(i-1))
 # 1st Derivative Channel Features
@@ -74,19 +74,19 @@ def allFeatures(data):
         output.append(abs(freq2[np.argmax(ft)]))
         featureList.append('chan%iMaxDel2Freq'%(i-1))
 # Global Features
-    output.append(data.ix[:,1:].abs().apply(np.max).max())
+    output.append(data.iloc[:,1:].abs().apply(np.max).max())
     featureList.append('maxAmp')
-    output.append(data.ix[:,1:].abs().apply(np.max).mean())
+    output.append(data.iloc[:,1:].abs().apply(np.max).mean())
     featureList.append('meanAmp')
-    output.append(data.ix[:,1:].abs().apply(np.max).var())
+    output.append(data.iloc[:,1:].abs().apply(np.max).var())
     featureList.append('varAmpAbs')
-    output.append(data.ix[:,1:].apply(np.max).var())
+    output.append(data.iloc[:,1:].apply(np.max).var())
     featureList.append('varAmp')
-    output.append(data.ix[:,1:].abs().apply(np.mean).var())
+    output.append(data.iloc[:,1:].abs().apply(np.mean).var())
     featureList.append('varMean')
-    output.append(data.ix[:,1:].abs().apply(np.var).var())
+    output.append(data.iloc[:,1:].abs().apply(np.var).var())
     featureList.append('varVar')
-    output.append(data.ix[:,1:].abs().apply(np.var).mean())
+    output.append(data.iloc[:,1:].abs().apply(np.var).mean())
     featureList.append('meanVar')
     output.append(np.array([abs(np.fft.fft(data['chan%i'%i])).max() for i in range(len(data.columns) - 1)]).max())
     featureList.append('maxFourAmp')
@@ -105,7 +105,7 @@ def allFeatures(data):
     featureList.append('varFreq')
     combs = []
     [combs.append(a) for a in (itertools.combinations(list(data.columns)[1:], 2))] 
-    covs = [np.cov(data.ix[:,combs[k][0]], data.ix[:,combs[k][1]])[0,1] for k in np.arange(0,len(combs)) ]
+    covs = [np.cov(data.iloc[:,combs[k][0]], data.iloc[:,combs[k][1]])[0,1] for k in np.arange(0,len(combs)) ]
     output.append(np.mean(np.abs(covs)))
     featureList.append('coVar')
 # 1st Derivative Global Features
